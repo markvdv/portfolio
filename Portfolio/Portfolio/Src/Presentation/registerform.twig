@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+    <head>
+        <title>register</title>
+    </head>
+    <body>
+        <?php
+        if(isset($error)) {
+            switch ($error) {
+                case "email_registered":
+                    echo '<p>email already registered</p>';
+                    break;
+                case "name_registered":
+                    echo '<p>name already registered</p>';
+                    break;
+
+            }
+        }
+        ?>     
+        <form action="register.php" method="POST">
+            <label for="email" value="email">email
+                <input type="email" placeholder="email" name="email">
+            </label>
+            <label for="username" value="username">username
+                <input type="text" placeholder="username" name="username">
+
+            </label>
+            <label for="password" value="password">password
+                <input type="password" placeholder="password" name="password">
+
+            </label>
+            <label for="passwordconfirm" value="password">confirm password
+                <input type="password" placeholder="confirm password" name="confirm_password">
+
+            </label>
+            <input type="submit" placeholder="submit" name="submit">
+
+        </form>
+    </body>
+</html>
