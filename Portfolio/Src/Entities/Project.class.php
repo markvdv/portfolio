@@ -1,29 +1,44 @@
 <?php
-namespace Src\Entities;
-class Project {
-private $id;
-private $naam;
-private $url;
-private $imgPath;
-private $srcPath;
-private $omschrijving;
 
-    
-    function __construct($id,$naam,$url,$imgPath,$srcPath,$omschrijving) {
-        $this->id=$id;
-        $this->naam=$naam;
-        $this->url=$url;
-        $this->imgPath=$imgPath;
-        $this->srcPath=$srcPath;
-        $this->omschrijving=$omschrijving;
+namespace Src\Entities;
+
+class Project implements \JsonSerializable {
+
+    private $id;
+    private $naam;
+    private $url;
+    private $imgPath;
+    private $srcPath;
+    private $omschrijving;
+
+    function __construct($id, $naam, $url, $imgPath, $srcPath, $omschrijving) {
+        $this->id = $id;
+        $this->naam = $naam;
+        $this->url = $url;
+        $this->imgPath = $imgPath;
+        $this->srcPath = $srcPath;
+        $this->omschrijving = $omschrijving;
     }
+
+    public function jsonSerialize() {
+        return [
+            "id" => $this->id,
+            "naam" => $this->naam,
+            "url" => $this->url,
+            "imgPath" => $this->imgPath,
+            "srcPath" => $this->srcPath,
+            "omschrijving" => $this->omschrijving
+        ];
+    }
+
     public function getId() {
         return $this->id;
     }
 
     public function setId($id) {
-        $this->id= $id;
+        $this->id = $id;
     }
+
     public function getNaam() {
         return $this->naam;
     }
@@ -37,8 +52,9 @@ private $omschrijving;
     }
 
     public function setUrl($url) {
-        $this->url= $url;
+        $this->url = $url;
     }
+
     public function getImgPath() {
         return $this->imgPath;
     }
@@ -46,21 +62,21 @@ private $omschrijving;
     public function setImgPath($imgPath) {
         $this->imgPath = $imgPath;
     }
+
     public function getSrcPath() {
         return $this->srcPath;
     }
 
     public function setSrcPath($srcPath) {
-        $this->srcPath= $srcPath;
+        $this->srcPath = $srcPath;
     }
+
     public function getOmschrijving() {
         return $this->omschrijving;
     }
 
     public function setOmschrijving($omschrijving) {
-        $this->omschrijving= $omschrijving;
+        $this->omschrijving = $omschrijving;
     }
 
-
 }
-

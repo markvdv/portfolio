@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width">
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+        <style>
+            .container{
+                width:80%;
+                margin:0 auto;
+            }
+            .imgholder{
+                float:left;
+                //width:150px;
+                margin:5px 5px;
+                background:grey;
+            }
+            .imgholder img{
+                max-width:100%;
+                max-height:100%;
+            }
+            .gallerybar{
+                // width:1600px;
+                margin-left:0px;
+                background-color:grey;
+                display:inline-block;
+                height:160px;
+            }
+            button:first-of-type{
+                margin-left:100px;
+            }
+            .gallerywindow{
+                margin:0 auto;
+                background-color:grey;
+                overflow:hidden;
+                width:800px;
+                float:left;
+            }
+            button{
+                float:left;
+                margin-top:5em;
+            }
+            *{
+                outline:red solid 1px;
+            }
+        </style>
+    </head>
+    <body>
+        <div>poging to gallerij</div>
+        <script>
+            window.onload = function() {
+                //json data
+                loadData("haalprojectenop.php");
+
+
+
+            };
+            function showGallery(ocollJSONParsed) {
+                //referentie naar container div
+                var eContainer = document.getElementsByClassName('container')[0];
+
+                //raam op tumbnails
+                var eGalleryWindow = document.createElement('div');
+                eGalleryWindow.setAttribute('class', 'gallerywindow');
+                var eDF = document.createDocumentFragment();
+
+                //container voor thumbnails die wordt bewogen
+                var eDivGallery = document.createElement('div');
+                eDivGallery.setAttribute('class', 'gallerybar');
+                eDivGallery.setAttribute('id', 'gallerybar');
+                eDivGallery.style.width = '0px';
+
+                // collectie van projecten loopen nu ist gewoon een tjdelijke array
+                //jsonencoded phparray van objecten omzetten naar jsobjecten
+
+                //  for (var i = 0; i < 10; i++) {
+                for (var i in ocollJSONParsed) {
+                        //creeren van divcontainers voor images
+                        var eDiv = document.createElement('div');
+                        eDiv.style.width = "150px";
+                        eDiv.style.height = "150px";
+                        eDiv.setAttribute("class", "imgholder");
+                        eDiv.id = "thumb_" + ocollJSONParsed[i]['id'];
+                        eDiv.setAttribute('name', ocollJSONParsed[i]['naam']);
+                        // thumbnailimage voor in imgholder
+                        var eImg = document.createElement('img');
+                        eImg.src = "Portfolio/"+ocollJSONParsed[i]['imgPath'];;
+                        console.log( ocollJSONParsed[i]['url']);
+                        eImg.addEventListener('click', function(e) {
+                            alert(e.target.parentNode.getAttribute('name'));
+                            $('#webdisplay').html('<object data= "http://localhost/'+ e.target.parentNode.getAttribute('name')+'">');
+
+                        })
+                        //appends
+                        eDiv.appendChild(eImg);
+                        eDivGallery.style.width = (parseInt(eDivGallery.style.width) + parseInt(eDiv.style.width)) + "px";
+                        alert( eDivGallery.style.width)
+                        eDivGallery.appendChild(eDiv);
+                }
+                eGalleryWindow.appendChild(eDivGallery);
+
+
+                var eKnopLinks = document.createElement("button");
+                var eKnopRechts = document.createElement("button");
+                eKnopLinks.innerHTML = "links";
+                eKnopLinks.addEventListener('click', function() {
+                    eKnopRechts.disabled = false;
+                    slide(this);
+                    //slideLeft();
+                })
+
+
+
+                eKnopRechts.innerHTML = "rechts";
+                eKnopRechts.addEventListener('click', function() {
+                    eKnopLinks.disabled = false;
+                    slide(this);
+                })
+                eDF.appendChild(eKnopLinks);
+                eDF.appendChild(eGalleryWindow);
+                eDF.appendChild(eKnopRechts);
+                eContainer.appendChild(eDF);
+
+                sWidth = parseInt(eDivGallery.style.width);
+                // alert(eDivGallery.style.width);
+            }
+
+            function slide(e) {
+                var marginLeft = parseInt($('.gallerybar').css('marginLeft'));
+                var eDivGalleryWidth = $('.gallery').css('width');
+                // alert(sWidth);
+                console.log(marginLeft);
+                if (e.innerHTML == "links") {
+                    if (marginLeft != -480) {
+                        slideLeft();
+                    }
+                }
+                if (e.innerHTML == "rechts") {
+                    if (marginLeft != 0) {
+                        slideRight();
+                    }
+                }
+                if (marginLeft == 0 && e.innerHTML == "rechts") {
+                    e.disabled = true;
+                }
+                if (marginLeft == -480 && e.innerHTML == "links") {
+                    e.disabled = true;
+                }
+            }
+            function slideLeft() {
+                $(".gallerybar").animate({marginLeft: "-=160px"}, 1500);
+            }
+            function slideRight() {
+                $(".gallerybar").animate({marginLeft: "+=160px"}, 1500);
+            }
+            function loadData(url) {
+                var xmlhttp = createXhrObject();
+                xmlhttp.open("POST", url, true)
+                xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xmlhttp.onreadystatechange = function()
+                {
+                    if (xmlhttp.readyState == 4 && xmlhttp.status == 200)
+                    {
+                        var sJSON = xmlhttp.responseText;
+                        var ocollJSONParsed = JSON.parse(sJSON);
+                        showGallery(ocollJSONParsed);
+                        //alert(xmlhttp.responseText);
+                    }
+                }
+                xmlhttp.send();
+            }
+            function createXhrObject() {
+                //memoizing
+                var xmlhttp = '';
+                if (window.XMLHttpRequest) {
+                    xmlhttp = new XMLHttpRequest();
+                }
+                else if (window.ActiveXObject) {
+                    try {
+                        xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
+                    }
+                    catch (e) {
+                        try {
+                            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+                        }
+                        catch (e) {
+                        }
+                    }
+                }
+                this.createXhrObject = function() {
+                    return xmlhttp;
+                }
+                return xmlhttp;
+            }
+        </script>
+        <div class="container"> </div>
+        <div class=" container">
+            <div id="webdisplay"></div>
+        </div>
+       
+    </body>
+
