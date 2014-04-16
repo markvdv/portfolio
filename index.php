@@ -16,9 +16,7 @@ $loader = new Twig_Loader_Filesystem("Portfolio/Src/Presentation");
 $twig = new Twig_Environment($loader,array('debug'=>true));
 $twig->addExtension(new Twig_Extension_Debug);
 
-use Src\Data\ProjectDAO;
-use Src\Entities\Project;
-$projecten=ProjectDAO::getAll();
-$view= $twig->render('CMS.twig',array('projectenlijst'=>$projecten));
+
+$view= $twig->render('portfolio.twig');
 echo $view;
 
