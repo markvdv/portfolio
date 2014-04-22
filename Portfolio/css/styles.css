@@ -1,5 +1,5 @@
     /* RESET */
-        html, body, div, h1, h2, h3, h4, h5, h6, ul, ol, dl, li, dt, dd, p, blockquote, pre, form, fieldset, table, th, td { margin: 0; padding: 0; } 
+        html, body, div, h1, h2, h3, h4, h5, h6, ul, ol, dl, li, dt, dd, p, blockquote, pre, form, fieldset, table, th, td ,textarea{ margin: 0; padding: 0; } 
         body{font-size:100%;}
         ul{list-style:none;}
         /* Einde RESET */
@@ -13,8 +13,6 @@
         }
         body{
             min-width:40em;
-            
-           
             color: grey;
             font-family:Arial,Helvetica,Sans-Serif;
             line-height: 150%;
@@ -30,7 +28,6 @@
             background:whitesmoke;
         }
         .container{ min-width:50em;
-            
             max-width:100em;
             width:80%;
            margin:0 auto;

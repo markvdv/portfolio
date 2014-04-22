@@ -1,0 +1,175 @@
+{# empty Twig template #}
+<!doctype html>
+<html>
+    <head>
+        <title>About me</title>
+        <link rel="stylesheet" href="Portfolio/css/styles.css"/>
+        <style>
+
+            #contactform{
+                margin:1em 0;
+                width:25em;
+            }
+            #contactform *{
+                float:left;
+                //clear:left;
+                margin-bottom:2em;
+            }
+            #contactform label{
+                width:100%;
+            }
+            #contactform [type=email]{
+                width:15em;
+            } 
+            #contactform [type=submit]{
+                width:30em;
+            } 
+            #contactform textarea{
+                width:15em;
+            } 
+            #contactform label{
+                background: #999999;
+                color: white;
+                text-align:center;
+            }
+            .me{
+                float:left;
+                width:10em;
+                margin-right:1em;
+            }
+            .me img{
+                max-width:100%;
+                max-height:100%;
+            }
+            #contactform ul{
+                float:left;
+                width:10em;
+            }
+            .error{
+                clear:both;
+                background:red;
+                color:white;
+                padding:0.5em 0;
+                padding-left:1em;
+            }
+            *{
+                outline:red solid 1px;
+            }
+            
+        </style>
+        <script>
+            var oFouten = {
+                required: {
+                    msg: "verplicht veld",
+                    test: function(elem) {
+                        return elem.value != '';
+                    }
+                }
+            window.onload = function() {
+                // referenties 
+                var eForm = document.getElementById('contactform');
+                var eSubmit = document.getElementById('submitBtn');
+                var eEmail = document.getElementById('email');
+                var eMessage = document.getElementById('message');
+                //eventlisteners        
+                eForm.addEventListener("submit", function(e) {
+                    e.preventDefault();
+                    var bGeldig = validateForm(this);
+                    if (bGeldig === true) {
+                        this.submit();
+                    }
+                })
+            }
+            function validateForm(form) {
+                var bValid = true;
+                for (var i = 0; i < form.elements.length; i++) {
+                    //vorige errors verbergen
+                    hideErrors(form.elements[i]);
+                    //valideer veld
+                    var bVeld = validateField(form.elements[i]);
+                    console.log("het element %s met name %s valideert %s", form.elements[i].nodeName, form.elements[i].name, bVeld);
+                    if (bVeld === false) {
+                        bValid = false;
+                    }
+
+
+                }
+                return bValid;
+            }
+            function showErrors(elem, aErrors) {
+                /*
+                 toont alle fouten voor ��n element
+                 @elem     element, te valideren veld
+                 @aErrors  array, fouten voor dit element
+                 */
+                var eBroertje = elem.nextSibling;
+                if (!eBroertje || !(eBroertje.nodeName == "UL" && eBroertje.className == "fouten")) {
+                    eBroertje = document.createElement('ul');
+                    eBroertje.className = "fouten";
+                    elem.parentNode.insertBefore(eBroertje, elem.nextSibling);
+                }
+//plaats alle foutberichten erin
+                for (var i = 0; i < aErrors.length; i++) {
+                    var eLi = document.createElement('li');
+                    eLi.innerHTML = aErrors[i];
+                    eBroertje.appendChild(eLi);
+                }
+            }
+            function hideErrors(elem) {
+                /*
+                 verwijdert alle fouten voor ��n element
+                 @elem     element, te valideren veld
+                 */
+                var eBroertje = elem.nextSibling;
+                if (eBroertje && eBroertje.nodeName == "UL" && eBroertje.className == "fouten") {
+                    elem.parentNode.removeChild(eBroertje);
+                }
+            }
+            function validateField(elem) {
+//valideert ��n veld volgens zijn class
+                var aFoutBoodschappen = [];
+                for (var fout in oFouten) {
+                    var re = new RegExp("(^|\\s)" + fout + "(\\s|$)"); //regex 
+// fouten class aanwezig?
+                    if (re.test(elem.className)) {
+                        var bTest = oFouten[fout].test(elem);
+                        console.log("het element %s met name %s wordt gevalideerd voor %s: %s", elem.nodeName, elem.name, fout, bTest);
+                        if (bTest === false) {
+                            aFoutBoodschappen.push(oFouten[fout].msg);
+                        }
+                    }
+                }
+                if (aFoutBoodschappen.length > 0) {
+                    showErrors(elem, aFoutBoodschappen);
+                }
+                return !(aFoutBoodschappen.length > 0);
+            }
+
+        </script>
+    </head>
+    <body>
+        <div class="container">
+        {% include "header.twig" %}
+            <h1> This is me!</h1>
+            <div class="me">
+                <img src="Portfolio/img/me.png">
+            </div>
+            <p>
+                  Ik ben Mark Van Der Veken en hou me graag bezig met programmeren. Op deze portfoliosite kunt u mijn projecten op het gebied van HTML5, CSS3, PHP, Javascript, jQuery, etc... bekijken
+            </p>
+            <form id="contactform" action="contactformcontroller.php" method="POST">
+                <label for="contactform" value="Contact Me">Contacteer me!</label>
+                <input id="email" class="required" name="email" type="email" placeholder="email">
+                <textarea id="message" class="required" name="message" type="text" placeholder="message" rows="10"></textarea>
+                <input id = "submitBtn" name="submitBtn" type="submit" value="submit"> 
+            </form>
+        {% if error is defined %}
+        <div class="error">
+            {%if error=="textHasHtml"%}
+            <p>Your message contains HTML and cannot be accepted.</p>
+{%endif%}
+        </div>
+{% endif %}
+        </div>
+    </body>
+</html>
