@@ -21,8 +21,8 @@ $view= $twig->render('aboutme.twig',array("error"=>$_GET['error']));
     
 }
 else{
-$view= $twig->render('aboutme.twig');
-//$view= $twig->render('portfolio.twig');
+//$view= $twig->render('aboutme.twig');
+$view= $twig->render('portfolio.twig');
 }
 echo $view;
 
